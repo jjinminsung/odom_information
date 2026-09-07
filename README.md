@@ -28,6 +28,8 @@ GPS로 부터 차량의 pose를 받아오고 설정한 모드에 따라 Dual Gps
    
       속도: /Competition_topic 우선
 
+
+
    2.2 dual_gps 모드
    
       위치: /odom_back
