@@ -20,35 +20,20 @@ GPS로 부터 차량의 pose를 받아오고 설정한 모드에 따라 Dual Gps
    동작 방식을 설명하기 이전에 차량의 위치를 받는 /odom_back 토픽은 GPS의 raw data를 utm 좌표계로 바꾼 후의 차량 위치 좌표입니다.
    
    2.1 gps_imu 모드
-      /odom_back ──────────────┐
-                              │ position
-      /imu ───────────────┐    │
-                          │    ▼
-                          └─> odom_information_node ──> /odom
-                               │
-      /Competition_topic ──────┤ speed
-      /cur_speed ──────────────┘ fallback
-      
-                               └──────────────> TF: map -> base_link
-      
+   
       위치: /odom_back
+   
       yaw: /imu
            -> IMU quaternion을 Roll-Pitch-Yaw로 변환한 뒤 yaw 사용
+   
       속도: /Competition_topic 우선
 
-  2.2 dual_gps 모드 
-      /odom_back ───────────┐
-                           ├─> position + baseline
-      /odom_front ──────────┘        │
-                                    ▼
-                           odom_information_node ──> /odom
-                                    │
-      /Competition_topic ───────────┤ speed
-      /cur_speed ───────────────────┘ fallback
-      
-                                    └──────────────> TF: map -> base_link
-      
+   2.2 dual_gps 모드
+   
       위치: /odom_back
+   
       yaw: /odom_back → /odom_front 방향 벡터
+   
       속도: /Competition_topic 우선
+   
       /odom 발행 시점: Front/Back GPS가 모두 새 데이터로 갱신되었을 때
