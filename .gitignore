@@ -1,0 +1,18 @@
+# catkin build artifacts
+build/
+devel/
+logs/
+install/
+*.pyc
+__pycache__/
+
+# editor
+*.swp
+*~
+.idea/
+
+# OS
+.DS_Store
+
+# vscode
+.vscode/
