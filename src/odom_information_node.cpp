@@ -13,7 +13,6 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 
-
 class OdomInformationNode
 {
 public:
@@ -39,7 +38,6 @@ public:
     pnh_.param<std::string>("frames/child", child_frame_, std::string("base_link"));
     pnh_.param<bool>("publish_tf", publish_tf_, true);
     
-
     pnh_.param<std::string>("topics/cur_speed", cur_speed_topic_, std::string("/cur_speed"));
     pnh_.param<std::string>("topics/competition", competition_topic_,
                             std::string("/Competition_topic"));
@@ -106,7 +104,6 @@ public:
     ROS_INFO_STREAM("[odom_information] started. mode=" << mode_);
     ROS_INFO_STREAM("[odom_information] sub back : " << odom_back_topic_);
 
-
     if (mode_ == "dual_gps")
     {
       ROS_INFO_STREAM("[odom_information] sub front: " << odom_front_topic_);
@@ -146,7 +143,6 @@ private:
     publishIfReady();
   }
 
-
   void OdomfrontCallback(const nav_msgs::Odometry::ConstPtr& msg)
   {
     last_front_ = *msg;
@@ -154,7 +150,6 @@ private:
     new_front_ = true;
     publishIfReady();
   }
-
 
   void imuCallback(const sensor_msgs::Imu::ConstPtr& msg)
   {
@@ -172,9 +167,7 @@ private:
     have_imu_ = true;
 
     // 중요: imu 콜백에서 publish하면 gps_imu 모드에서 /odom이 중복 발행됨
-    // publishIfReady();  <-- 삭제!
   }
-
 
   void curSpeedCallback(const std_msgs::Float32::ConstPtr& msg)
   {
@@ -366,7 +359,6 @@ private:
       
       applyEgoSpeedToOdom(odom);
 
-
       geometry_msgs::TransformStamped t;
       // /odom_back can carry a simulator clock that differs from ROS wall
       // time.  Publish the TF with the active clock so RViz can transform
@@ -438,7 +430,6 @@ private:
       odom.pose.pose.orientation.z = q.z();
       odom.pose.pose.orientation.w = q.w();
 
-
       applyEgoSpeedToOdom(odom);
 
       geometry_msgs::TransformStamped t;
@@ -469,87 +460,6 @@ private:
     }
   }
 
-
-  // // ---------- publish ----------
-  // void publishIfReady()
-  // {
-  //   if (mode_ == "dual_gps")
-  //   {
-  //     if (!have_back_ || !have_front_) return;
-
-  //     nav_msgs::Odometry odom = last_back_;
-  //     odom.header.stamp = ros::Time::now();
-  //     odom.header.frame_id = parent_frame_;
-  //     odom.child_frame_id = child_frame_;
-
-  //     double yaw = 0.0;
-  //     double baseline = 0.0, dx = 0.0, dy = 0.0;
-  //     const bool yaw_ok = computeYawFromDualGps(yaw, baseline, dx, dy);
-
-  //     // baseline invalid면 "이전 yaw"를 쓰되, 아직 초기화 안됐으면 publish 보류
-  //     if (!yaw_ok)
-  //     {
-  //       if (!yaw_initialized_) return;
-  //       yaw = yaw_;
-  //     }
-
-  //     if (print_yaw_)
-  //     {
-  //       ROS_INFO_THROTTLE(print_period_,
-  //                         "[dual_gps] yaw=%.3f rad (%.1f deg) baseline=%.2f m ok=%d dx=%.2f dy=%.2f",
-  //                         yaw, yaw * 180.0 / M_PI, baseline, yaw_ok ? 1 : 0, dx, dy);
-  //     }
-
-  //     tf2::Quaternion q;
-  //     q.setRPY(0.0, 0.0, yaw);
-
-  //     odom.pose.pose.orientation.x = q.x();
-  //     odom.pose.pose.orientation.y = q.y();
-  //     odom.pose.pose.orientation.z = q.z();
-  //     odom.pose.pose.orientation.w = q.w();
-
-  //     odom_pub_.publish(odom);
-  //     return;
-  //   }
-
-  //   // gps_imu
-  //   if (mode_ == "gps_imu")
-  //   {
-  //     if (!have_back_ || !have_imu_) return;
-
-  //     nav_msgs::Odometry odom = last_back_;
-  //     odom.header.stamp = ros::Time::now();
-  //     odom.header.frame_id = parent_frame_;
-  //     odom.child_frame_id = child_frame_;
-
-  //     double yaw = 0.0;
-  //     const bool yaw_ok = computeYawFromImu(yaw);
-  //     if (!yaw_ok)
-  //     {
-  //       if (!yaw_initialized_) return;
-  //       yaw = yaw_;
-  //     }
-
-  //     if (print_yaw_)
-  //     {
-  //       ROS_INFO_THROTTLE(print_period_,
-  //                         "[gps_imu] yaw=%.3f rad (%.1f deg)",
-  //                         yaw, yaw * 180.0 / M_PI);
-  //     }
-
-  //     tf2::Quaternion q;
-  //     q.setRPY(0.0, 0.0, yaw);
-
-  //     odom.pose.pose.orientation.x = q.x();
-  //     odom.pose.pose.orientation.y = q.y();
-  //     odom.pose.pose.orientation.z = q.z();
-  //     odom.pose.pose.orientation.w = q.w();
-
-  //     odom_pub_.publish(odom);
-  //     return;
-  //   }
-  // }
-
 private:
   ros::NodeHandle nh_, pnh_;
   ros::Subscriber odom_back_sub_, odom_front_sub_, imu_sub_, cur_speed_sub_, competition_sub_;
@@ -562,7 +472,6 @@ private:
   std::string odom_back_topic_, odom_front_topic_, odom_out_topic_, imu_topic_;
   std::string parent_frame_, child_frame_;
   std::string cur_speed_topic_, competition_topic_;
-
 
   // params
   double yaw_offset_;
